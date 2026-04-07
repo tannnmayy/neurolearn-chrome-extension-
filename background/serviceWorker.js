@@ -56,14 +56,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 /**
  * Executes the AI API call from the background context to bypass 
  * strict CSP/CORS policies on modern webpages.
- */   
+ */
 async function handleSimplifyText(message, sendResponse) {
   // Use Hugging Face Inference Router with OpenAI-compatible chat/completions endpoint
   const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions';
-  // Do not commit API keys. Load this from storage/options in real use.
-  const HF_API_KEY = 'YOUR_HF_API_KEY_HERE';
+  const { hfApiKey } = await chrome.storage.local.get('hfApiKey');
+  const HF_API_KEY = typeof hfApiKey === 'string' ? hfApiKey.trim() : '';
 
-  
+  if (!HF_API_KEY) {
+    console.error('[NEURO-READS SW] Missing hfApiKey in chrome.storage.local. See README.');
+    sendResponse({ success: false, error: 'Missing Hugging Face API key' });
+    return;
+  }
+
   try {
     console.log('[NEURO-READS SW] Calling AI API.', {
       url: HF_API_URL,
