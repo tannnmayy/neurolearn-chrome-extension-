@@ -46,29 +46,6 @@ Supporting modules: `utils/textProcessor.js` (chunking, light sanitization), `ai
 
 ---
 
-## Configuration (AI)
-
-The background worker calls the Hugging Face **OpenAI-compatible** chat endpoint. The API key is **not** stored in the repo. Set it once in extension storage under the key `hfApiKey`:
-
-1. Open `chrome://extensions`, find **NEURO-READS**, and click **Service worker** (or **Inspect views: service worker**) to open DevTools for the background script.
-2. In the **Console**, run (replace with your real token):
-
-   `chrome.storage.local.set({ hfApiKey: 'hf_...' })`
-
-3. Reload the extension if simplification still fails.
-
-**Security:** Never commit tokens to git. If a token was ever pushed, revoke it in your Hugging Face account and create a new one.
-
-Default model in code: `Qwen/Qwen2.5-72B-Instruct` (adjust in `serviceWorker.js` if your account uses another model).
-
----
-
-## Local testing without the real API
-
-Open `test.html` in a browser from the project folder. It mocks `chrome.runtime.sendMessage` so you can exercise the DOM scanning and rewrite flow without a network call. Use the browser console to inspect logs.
-
----
-
 ## Project structure
 
 ```
@@ -106,22 +83,6 @@ neuroreads extension/
 
 ---
 
-## Troubleshooting
-
-| Issue | Suggestion |
-|-------|------------|
-| AI does nothing | Confirm the toggle is on, check the extension service worker console and page console for errors, verify API key and model. |
-| Some text unchanged | Very short strings or single words are skipped; off-screen blocks are processed when scrolled into view. |
-| Layout looks odd | Simplification edits text nodes inside existing elements; complex pages with heavy scripts may still reflow. |
-
----
-
 ## Contributing
 
-Issues and pull requests are welcome. When changing AI behavior, update `ai/promptTemplates.js` and test on a few real sites (news, Wikipedia, blogs).
-
----
-
-## License
-
-No license file is included in this repository yet. Add a `LICENSE` file when you publish or redistribute.
+Issues and pull requests are welcome. When changing AI behavior, update `ai/promptTemplates.js` 
